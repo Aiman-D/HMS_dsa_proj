@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple HMS Patient List</title>
+</head>
+<body>
+    <h1>Patient List</h1>
+    <ul id="patients"></ul>
+
+    <h2>Add Patient</h2>
+    <form id="patientForm">
+        ID: <input type="number" id="id" required><br>
+        Name: <input type="text" id="name" required><br>
+        Age: <input type="number" id="age" required><br>
+        <button type="submit">Add</button>
+    </form>
+
+    <script>
+        async function loadPatients() {
+            const res = await fetch('/patients');
+            const data = await res.json();
+            const list = document.getElementById('patients');
+            list.innerHTML = '';
+            data.forEach(p => {
+                const li = document.createElement('li');
+                li.textContent = `ID: ${p.id}, Name: ${p.name}, Age: ${p.age}`;
+                list.appendChild(li);
+            });
+        }
+
+        document.getElementById('patientForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = Number(document.getElementById('id').value);
+            const name = document.getElementById('name').value;
+            const age = Number(document.getElementById('age').value);
+            await fetch('/patients', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id, name, age })
+            });
+            loadPatients();
+            e.target.reset();
+        });
+
+        loadPatients();
+    </script>
+</body>
+</html>
