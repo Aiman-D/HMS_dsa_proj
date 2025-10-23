@@ -406,74 +406,130 @@ void heapSort(int arr[], int n) {
 
 // ----------------------------------- Main Demonstration -----------------------------------
 int main() {
-    cout << "AVL Tree Test for Patient Records:\n";
     AVLNode* patientTree = NULL;
-    patientTree = insertAVL(patientTree, 101, {25, "Alice"});
-    patientTree = insertAVL(patientTree, 102, {45, "Bob"});
-    PatientInfo* pf = searchAVL(patientTree, 101);
-    if (pf) cout << "Patient found: " << pf->name << "\n";
-
-    cout << "\nMinHeap for Emergency Triage Test:\n";
     MinHeap heap;
-    heap.insert({4, "CriticalCase"});
-    heap.insert({2, "SuperCritical"});
-    EmergencyPatient ep = heap.extractMin();
-    cout << "Next emergency: " << ep.name << "\n";
-
-    cout << "\nQueue Test:\n";
     Queue q;
-    q.enqueue({5, "QPatient"});
-    EmergencyPatient eq = q.dequeue();
-    cout << "Queue patient: " << eq.name << "\n";
-
-    cout << "\nStack Test (Integer IDs):\n";
-    Stack<int> s;
-    s.push(101); s.push(203);
-    cout << "Stack pop: " << s.pop() << "\n";
-
-    cout << "\nSingly Linked List for Patient Visits:\n";
-    SinglyLinkedList visitHistory;
-    visitHistory.addVisit("2025-10-01", "Flu vaccine");
-    visitHistory.addVisit("2025-10-15", "Follow-up check");
-    visitHistory.printVisits();
-
-    cout << "\nDoubly Linked List for Navigation History:\n";
-    DoublyLinkedList navHistory;
-    navHistory.visitPage("Home"); navHistory.visitPage("Patient Records"); navHistory.visitPage("Billing");
-    navHistory.printHistory();
-
-    cout << "\nCircular Linked List for Staff Duty Roster:\n";
     CircularLinkedList dutyRoster;
-    dutyRoster.addStaff("Dr. Smith"); dutyRoster.addStaff("Nurse Lee"); dutyRoster.addStaff("Dr. Johnson");
-    dutyRoster.printRoster(6);
-
-    cout << "\nHashTable UHID Lookup Test:\n";
     HashTable ht;
-    ht.insert(9991, {37, "Carol"});
-    PatientInfo* pt = ht.find(9991);
-    if (pt) cout << "Patient by UHID: " << pt->name << "\n";
-
-    cout << "\nGraph and Dijkstra Routing Test:\n";
     Graph g(3);
-    g.addEdge(0, 1, 10); g.addEdge(1, 2, 5); g.addEdge(0, 2, 20);
     int dist[3];
-    dijkstra(g, 0, dist);
-    cout << "Reception to ICU path cost: " << dist[2] << "\n";
+    ExpNode* billingFormula = buildSampleExpression();
 
-    cout << "\nExpression Tree Evaluation (Sample Billing Formula):\n";
-    ExpNode* billingFormula = buildSampleExpression(); // (3 + 5) * 2
-    cout << "Formula value: " << evaluate(billingFormula) << "\n";
+    // Preload some sample data
+    dutyRoster.addStaff("Dr. Smith");
+    dutyRoster.addStaff("Nurse Lee");
+    dutyRoster.addStaff("Dr. Johnson");
+    g.addEdge(0, 1, 10); g.addEdge(1, 2, 5); g.addEdge(0, 2, 20);
 
-    cout << "\nSorting Algorithms Test:\n";
-    int arr[] = {12, 11, 13, 5, 6, 7};
-    int n = sizeof(arr)/sizeof(arr[0]);
-    cout << "Original array: ";
-    for (int i=0; i<n; i++) cout << arr[i] << " ";
-    cout << "\n";
-    heapSort(arr, n);
-    cout << "Heap Sorted array: ";
-    for (int i=0; i<n; i++) cout << arr[i] << " ";
-    cout << "\n";
+    int choice;
+    while (true) {
+        cout << "\n============================\n";
+        cout << " HOSPITAL DSA PROJECT MENU\n";
+        cout << "============================\n";
+        cout << "1. Add Patient (AVL Tree)\n";
+        cout << "2. Search Patient (AVL Tree)\n";
+        cout << "3. Add Emergency Case (MinHeap)\n";
+        cout << "4. Extract Next Emergency Case\n";
+        cout << "5. Enqueue Patient (Queue)\n";
+        cout << "6. Dequeue Patient (Queue)\n";
+        cout << "7. Show Duty Roster (Circular Linked List)\n";
+        cout << "8. Add UHID Patient (Hash Table)\n";
+        cout << "9. Search UHID Patient (Hash Table)\n";
+        cout << "10. Find Shortest Path (Graph Dijkstra)\n";
+        cout << "11. Evaluate Billing Formula (Expression Tree)\n";
+        cout << "0. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
 
+        if (choice == 0) {
+            cout << "Exiting program. Goodbye!\n";
+            break;
+        }
+
+        switch (choice) {
+            case 1: {
+                int id, age;
+                string name;
+                cout << "Enter Patient ID, Age, Name: ";
+                cin >> id >> age >> name;
+                patientTree = insertAVL(patientTree, id, {age, name});
+                cout << "Patient inserted successfully.\n";
+                break;
+            }
+            case 2: {
+                int id;
+                cout << "Enter Patient ID to search: ";
+                cin >> id;
+                PatientInfo* p = searchAVL(patientTree, id);
+                if (p) cout << "Found: " << p->name << " (Age " << p->age << ")\n";
+                else cout << "Patient not found.\n";
+                break;
+            }
+            case 3: {
+                EmergencyPatient ep;
+                cout << "Enter Emergency Case Name and Triage Score: ";
+                cin >> ep.name >> ep.triageScore;
+                heap.insert(ep);
+                cout << "Emergency case added.\n";
+                break;
+            }
+            case 4: {
+                EmergencyPatient ep = heap.extractMin();
+                if (ep.name != "") cout << "Next emergency case: " << ep.name << "\n";
+                else cout << "No emergency cases pending.\n";
+                break;
+            }
+            case 5: {
+                EmergencyPatient ep;
+                cout << "Enter Patient Name and Triage Score: ";
+                cin >> ep.name >> ep.triageScore;
+                q.enqueue(ep);
+                cout << "Patient added to queue.\n";
+                break;
+            }
+            case 6: {
+                EmergencyPatient ep = q.dequeue();
+                if (ep.name != "") cout << "Dequeued: " << ep.name << "\n";
+                else cout << "Queue is empty.\n";
+                break;
+            }
+            case 7: {
+                cout << "Enter number of staff to display in rotation: ";
+                int num; cin >> num;
+                dutyRoster.printRoster(num);
+                break;
+            }
+            case 8: {
+                int uhid, age;
+                string name;
+                cout << "Enter UHID, Age, Name: ";
+                cin >> uhid >> age >> name;
+                ht.insert(uhid, {age, name});
+                cout << "Patient inserted in Hash Table.\n";
+                break;
+            }
+            case 9: {
+                int uhid;
+                cout << "Enter UHID to search: ";
+                cin >> uhid;
+                PatientInfo* p = ht.find(uhid);
+                if (p) cout << "Found UHID: " << p->name << " (Age " << p->age << ")\n";
+                else cout << "UHID not found.\n";
+                break;
+            }
+            case 10: {
+                dijkstra(g, 0, dist);
+                cout << "Shortest path from Reception to ICU: " << dist[2] << "\n";
+                break;
+            }
+            case 11: {
+                cout << "Billing formula result: " << evaluate(billingFormula) << "\n";
+                break;
+            }
+            default:
+                cout << "Invalid choice. Try again.\n";
+        }
+    }
     return 0;
 }
+
